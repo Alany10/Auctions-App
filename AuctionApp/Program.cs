@@ -1,21 +1,33 @@
+using AuctionApp.Areas.Identity.Data;
 using AuctionApp.Core;
 using AuctionApp.Core.Interfaces;
 using AuctionApp.Persistence;
 using Microsoft.EntityFrameworkCore;
+using AuctionApp.Data;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllersWithViews();
 
+// dependency injection of service into controller
+builder.Services.AddScoped<IAuctionService, AuctionService>();
+
+// dependncy injection of persistence into service
+builder.Services.AddScoped<IAuctionPersistence, MySqlAuctionPersistence>();
+
+// auctionsdb
 builder.Services.AddDbContext<AuctionDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("AuctionDbConnection")));
 
-builder.Services.AddControllersWithViews();
+// identity
+builder.Services.AddDbContext<AppIdentityDbContext>(options =>    
+    options.UseMySQL(builder.Configuration.GetConnectionString("IdentityDbConnection")));
+builder.Services.AddDefaultIdentity<AppIdentityUser>(options => 
+    options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppIdentityDbContext>();
 
-builder.Services.AddScoped<IAuctionService, AuctionService>();
-
-builder.Services.AddScoped<IAuctionPersistence, MySqlAuctionPersistence>();
-
+// auto mapping of data
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
@@ -29,11 +41,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",

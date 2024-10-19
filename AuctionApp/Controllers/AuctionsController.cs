@@ -2,10 +2,12 @@ using System.Data;
 using AuctionApp.Core;
 using AuctionApp.Core.Interfaces;
 using AuctionApp.Models.Auctions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuctionApp.Controllers
 {
+    [Authorize]
     public class AuctionsController : Controller
     {
         private IAuctionService _auctionService;
@@ -18,7 +20,7 @@ namespace AuctionApp.Controllers
         // GET: AuctionsController
         public ActionResult Index()
         {
-            List<Auction> auctions = _auctionService.GetAllByUserName("admin");
+            List<Auction> auctions = _auctionService.GetAllByUserName(User.Identity.Name);
             List<AuctionVm> auctionsVMs = new List<AuctionVm>();
 
             foreach (Auction auction in auctions)
@@ -34,7 +36,8 @@ namespace AuctionApp.Controllers
         {
             try
             {
-                Auction auction = _auctionService.GetById(id, "admin");
+                Auction auction = _auctionService.GetById(id, User.Identity.Name);
+                if (auction == null) return BadRequest(); //HTTP 400
                 
                 AuctionDetailsVm detailsVm = AuctionDetailsVm.FromAuction(auction);
                 return View(detailsVm);
@@ -44,7 +47,6 @@ namespace AuctionApp.Controllers
                 return BadRequest();
             }
         }
-
         
         // GET: AuctionsController/Create
         public ActionResult Create()
@@ -65,7 +67,7 @@ namespace AuctionApp.Controllers
                     string description = createAuctionVm.Description;
                     DateTime endDate = createAuctionVm.EndDate;
                     int price = createAuctionVm.Price;
-                    string userName = "admin";
+                    string userName = User.Identity.Name;
                     
                     _auctionService.Add(title, description, endDate, price, userName);
                     return RedirectToAction("Index");

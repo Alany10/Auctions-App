@@ -29,15 +29,23 @@ public class AuctionService : IAuctionService
         return auction;
     }
 
-    public bool Add(string title, string description, DateTime endDate, int price, string userName)
+    public bool Add(string title, string description, DateTime endDate, int price, string userName) 
     {
         if (title == null || title.Length > 100) throw new DataException("Title cannot be null or more than 100 characters");
-        if (description == null) throw new DataException("Description cannot be null");
-        if (userName == null) throw new DataException("User name cannot be null");
         
+        if (description == null) throw new DataException("Description cannot be null");
+        
+        // Kontrollera om endDate är i framtiden
+        if (endDate <= DateTime.Now) throw new DataException("End date must be a future date.");
+
+        if (price < 1) throw new DataException("Price must be valid");
+        
+        if (userName == null) throw new DataException("User name cannot be null");
+
         Auction newAuction = new Auction(title, description, endDate, price, userName);
 
         List<Auction> allAuctions = _auctionPersistence.GetAll();
+    
         foreach (Auction auction in allAuctions)
         {
             if (Auction.IsEqual(newAuction, auction))
@@ -49,4 +57,5 @@ public class AuctionService : IAuctionService
         _auctionPersistence.Save(newAuction);
         return true;
     }
+
 }
