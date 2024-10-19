@@ -6,21 +6,21 @@ namespace AuctionApp.Persistence;
 public class BidDb
 {
     [Key]
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     [Required]
-    public int? Price { get; set; }
+    public int Price { get; set; }
     
     [Required]
     [DataType(DataType.DateTime)]
-    public DateTime? BidDate { get; set; }
+    public DateTime BidDate { get; set; }
     
     [Required]
-    public string? UserName { get; set; }
+    public string UserName { get; set; }
 
     // FK and navigation propert
     [ForeignKey("AuctionId")]
-    public AuctionDb? AuctionDb { get; set; }
+    public AuctionDb AuctionDb { get; set; }
     
     public int AuctionId { get; set; } 
 }
