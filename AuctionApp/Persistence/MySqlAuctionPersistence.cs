@@ -59,11 +59,6 @@ public class MySqlAuctionPersistence : IAuctionPersistence
             .Where(a => a.Id == id)
             .Include(a => a.BidDbs)
             .FirstOrDefault(); // null if not found
-
-        if (auctionDb == null)
-        {
-            throw new DataException("No auction found");
-        }
         
         Auction auction = _mapper.Map<Auction>(auctionDb);
         foreach (BidDb bidDb in auctionDb.BidDbs)
@@ -72,6 +67,7 @@ public class MySqlAuctionPersistence : IAuctionPersistence
             auction.AddBid(bid);
         }
         
+        Console.WriteLine(auction.Price);
         return auction;
     }
 
@@ -101,12 +97,7 @@ public class MySqlAuctionPersistence : IAuctionPersistence
     public bool Bid(Bid bid, int auctionId) 
     {
         // Hämta auktionen för att kontrollera nuvarande pris
-        var auction = _dbContext.AuctionDbs.Find(auctionId);
-        if (auction == null)
-        {
-            // Hantera fel om auktionen inte hittas (kan kasta ett undantag eller returnera false)
-            throw new InvalidOperationException($"Auction with ID {auctionId} does not exist.");
-        }
+        AuctionDb auction = _dbContext.AuctionDbs.Find(auctionId);
     
         // Konvertera Bid till BidDb
         BidDb bdb = _mapper.Map<BidDb>(bid);

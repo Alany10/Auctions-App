@@ -92,7 +92,7 @@ public class AuctionService : IAuctionService
         return true;
     }
 
-    public List<Auction> ListAllAuctions()
+    public List<Auction> ListAllActiveAuctions()
     {
         // Hämtar alla auktioner från din datalagring
         List<Auction> auctions = _auctionPersistence.GetAll();
@@ -110,14 +110,15 @@ public class AuctionService : IAuctionService
     {
         Auction auction = _auctionPersistence.GetById(auctionId);
 
-        if (price <= auction.Price) throw new DataException("Price must be highest");
-
         if (auction == null) throw new DataException("Auction not found");
-
+        
+        if (price <= auction.Price) throw new DataException("Price must be higher");
+        
         if (userName == null) throw new DataException("User name cannot be null");
 
         Bid newBid = new Bid(price, userName);
-        auction.AddBid(newBid);
+        if (newBid.BidDate < auction.EndDate) auction.AddBid(newBid);
+        else throw new DataException("Auction expired");
 
         _auctionPersistence.Bid(newBid, auctionId);
         return true;
@@ -139,10 +140,42 @@ public class AuctionService : IAuctionService
                 }
             }
         }
-
-        yourAuctions.OrderByDescending(auction => auction.EndDate);
+        
+        yourAuctions
+            .OrderBy(auction => auction.EndDate) // Sortera efter EndDate
+            .ToList();
+        
         return yourAuctions;
     }
 
+    public List<Auction> ListAllWonAuctions(string userName)
+    {
+        // Hämta alla avslutade auktioner
+        List<Auction> auctions = _auctionPersistence.GetAll()
+            .Where(a => !a.IsCompleted())
+            .ToList();
 
+        List<Auction> wonAuctions = new List<Auction>();
+
+        // Loop genom varje auktion
+        foreach (Auction auction in auctions)
+        {
+            // Kontrollera om auktionen har bud
+            if (auction.Bids.Any())
+            {
+                // Hitta det högsta budet för auktionen
+                Bid highestBid = auction.Bids.OrderByDescending(b => b.Price).First();
+
+                // Kontrollera om användarnamnet för det högsta budet matchar det angivna användarnamnet
+                if (highestBid.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase))
+                {
+                    wonAuctions.Add(auction);
+                }
+            }
+        }
+
+        return wonAuctions;
+    }
+
+    
 }

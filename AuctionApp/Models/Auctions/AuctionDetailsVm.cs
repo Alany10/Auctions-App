@@ -36,7 +36,7 @@ public class AuctionDetailsVm
             IsCompleted = auction.IsCompleted(),
             IsOwner = isOwner
         };
-
+        
         // Sortera buden i fallande ordning efter pris innan de läggs till i BidVms-listan
         foreach (var bid in auction.Bids.OrderByDescending(bid => bid.Price)) 
         {

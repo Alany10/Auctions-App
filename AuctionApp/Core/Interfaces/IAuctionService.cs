@@ -12,7 +12,9 @@ public interface IAuctionService
     
     bool editDescription(int id, string description, string userName);
 
-    public List<Auction> ListAllAuctions();
+    public List<Auction> ListAllActiveAuctions();
+    
+    public List<Auction> ListAllWonAuctions(string userName);
     
     public bool Bid(int price, int auctionId, string userName);
     

@@ -70,19 +70,18 @@
 
         public bool AddBid(Bid bid)
         {
-            if (bid.Price <= Price)
+            if (bid.Price > Price)
             {
-                return false;
+                Price = bid.Price;
             }
-
-            Price = bid.Price;
+            
             _bids.Add(bid);
             return true;
         }
 
         public bool IsCompleted()
         {
-            return EndDate > DateTime.Now.Date;
+            return EndDate > DateTime.Now;
         }
 
         public static bool IsEqual(Auction auction1, Auction auction2)

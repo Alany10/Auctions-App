@@ -36,7 +36,7 @@ namespace AuctionApp.Controllers
         {
             // Hämta alla auktioner
             List<Auction>
-                auctions = _auctionService.ListAllAuctions(); // Du behöver implementera denna metod i din tjänst
+                auctions = _auctionService.ListAllActiveAuctions(); // Du behöver implementera denna metod i din tjänst
             List<AuctionVm> auctionsVMs = new List<AuctionVm>();
 
             foreach (Auction auction in auctions)
@@ -54,6 +54,23 @@ namespace AuctionApp.Controllers
             // Hämta alla auktioner
             List<Auction>
                 auctions = _auctionService.ListAllyourAuctions(userName); // Du behöver implementera denna metod i din tjänst
+            List<AuctionVm> auctionsVMs = new List<AuctionVm>();
+
+            foreach (Auction auction in auctions)
+            {
+                auctionsVMs.Add(AuctionVm.fromAuction(auction));
+            }
+
+            return View("Index", auctionsVMs); // Använd samma vy som för Index
+        }
+        
+        public ActionResult WonAuctions()
+        {
+            string userName = User.Identity.Name;
+            
+            // Hämta alla auktioner
+            List<Auction>
+                auctions = _auctionService.ListAllWonAuctions(userName); // Du behöver implementera denna metod i din tjänst
             List<AuctionVm> auctionsVMs = new List<AuctionVm>();
 
             foreach (Auction auction in auctions)
