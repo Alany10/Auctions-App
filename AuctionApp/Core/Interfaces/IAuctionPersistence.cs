@@ -6,7 +6,11 @@ public interface IAuctionPersistence
     
     List<Auction> GetAllByUserName(string userName);
     
-    Auction GetById(int id, string userName);
+    Auction GetById(int id);
     
     bool Save(Auction auction);
+    
+    bool Update(Auction auction);
+
+    public bool Bid(Bid bid, int auctionId);
 }

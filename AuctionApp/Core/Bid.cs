@@ -21,22 +21,22 @@ public class Bid
         }
     }
     
-    // public Auction Auction { get; set; }
+    public DateTime BidDate { get; set; }
     
     public string UserName { get; set; }
 
     public Bid(int price, string userName)
     {
         _price = price;
-        // Auction = auction;
+        BidDate = DateTime.Now;
         UserName = userName;
     }
 
-    public Bid(int id, int price, string userName) 
+    public Bid(int id, int price,string userName) 
     {
         Id = id;
         _price = price;
-        //Auction = auction;
+        BidDate = DateTime.Now;
         UserName = userName;
     }
 
@@ -44,6 +44,6 @@ public class Bid
 
     public override string ToString()
     {
-        return $"{Id}, price: {Price}";
+        return $"{Id}, price: {Price}, {BidDate}";
     }
 }

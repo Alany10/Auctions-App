@@ -27,7 +27,6 @@ builder.Services.AddDbContext<AppIdentityDbContext>(options =>
 builder.Services.AddDefaultIdentity<AppIdentityUser>(options => 
     options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppIdentityDbContext>();
 
-// auto mapping of data
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
@@ -47,8 +46,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-
-app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",

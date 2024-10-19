@@ -1,6 +1,5 @@
 ﻿namespace AuctionApp.Models.Auctions;
 
-using System;
 using System.ComponentModel.DataAnnotations;
 
 public class CreateAuctionVm 

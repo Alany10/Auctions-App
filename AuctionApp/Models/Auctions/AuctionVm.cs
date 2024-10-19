@@ -19,7 +19,7 @@ public class AuctionVm
     public int Price { get; set; }
     
     public bool IsCompleted { get; set; }
-    
+
     public string UserName { get; set; }
 
     public static AuctionVm fromAuction(Auction auction)

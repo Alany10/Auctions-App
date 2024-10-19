@@ -9,8 +9,12 @@ public class BidVm
     public int Id { get; set; }
     
     public int Price  { get; set; }
-    
-    public string UserName  { get; set; }
+
+    [Display(Name = "Bid date")]
+    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+    public DateTime BidDate { get; set; }
+
+    public string UserName  { get; set; }    
 
     public static BidVm FromBid(Bid bid)
     {
@@ -18,6 +22,7 @@ public class BidVm
         {
             Id = bid.Id,
             Price = bid.Price,
+            BidDate = bid.BidDate,
             UserName = bid.UserName
         };
     }
