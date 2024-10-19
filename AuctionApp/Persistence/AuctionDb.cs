@@ -9,20 +9,20 @@ public class AuctionDb
     
     [Required]
     [MaxLength(100)]
-    public string? Title { get; set; }
+    public string Title { get; set; }
 
     [Required]
-    public string? Description { get; set; }
+    public string Description { get; set; }
 
     [Required] 
     [DataType(DataType.DateTime)]
-    public DateTime? EndDate { get; set; }
+    public DateTime EndDate { get; set; }
 
     [Required] 
-    public int? Price { get; set; }
+    public int Price { get; set; }
 
     [Required]
-    public string? UserName { get; set; }
+    public string UserName { get; set; }
     
     // Navigation property
     public List<BidDb> BidDbs { get; set; } = new List<BidDb>();
