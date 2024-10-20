@@ -23,6 +23,8 @@ public class AuctionDetailsVm
     public List<BidVm> BidVms { get; set; } = new();
     
     public bool IsOwner { get; set; } // Ny egenskap för att ange om användaren är ägare
+    
+    public string UserName { get; set; } 
 
     public static AuctionDetailsVm FromAuction(Auction auction, bool isOwner)
     {
@@ -34,7 +36,8 @@ public class AuctionDetailsVm
             EndDate = auction.EndDate,
             Price = auction.Price,
             IsCompleted = auction.IsCompleted(),
-            IsOwner = isOwner
+            IsOwner = isOwner,
+            UserName = auction.UserName
         };
         
         // Sortera buden i fallande ordning efter pris innan de läggs till i BidVms-listan
@@ -42,7 +45,6 @@ public class AuctionDetailsVm
         {
             detailsVm.BidVms.Add(BidVm.FromBid(bid));
         }
-
         
         return detailsVm;
     }
