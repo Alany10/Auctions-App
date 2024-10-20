@@ -1,4 +1,4 @@
 # Distro-Lab2
 
-Alan Youssef alany2kth.se
+Alan Youssef alany@kth.se
 Ali Nabizada alinabi@kth.se
