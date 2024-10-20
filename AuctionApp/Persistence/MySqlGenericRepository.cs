@@ -3,15 +3,15 @@ using AuctionApp.Core;
 using AuctionApp.Core.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-
+/*
 namespace AuctionApp.Persistence;
 
-public class MySqlAuctionPersistence : IAuctionPersistence
+public class MySqlGenericRepository : IGenericRepository
 {
     private readonly AuctionDbContext _dbContext;
     private readonly IMapper _mapper;
 
-    public MySqlAuctionPersistence(AuctionDbContext dbContext, IMapper mapper)
+    public MySqlGenericRepository(AuctionDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
         _mapper = mapper;
@@ -118,4 +118,4 @@ public class MySqlAuctionPersistence : IAuctionPersistence
         return true;
     }
 
-}
+}*/

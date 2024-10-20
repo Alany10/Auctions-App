@@ -2,21 +2,23 @@
 
 public interface IAuctionService
 {
-    List<Auction> GetAllByUserName(string userName);
+    List<Auction> ListYourAuctions(string userName);
     
-    Auction GetById(int id);
+    Auction GetAuctionById(int id);
     
     bool IsOwner(int id, string userName);
     
-    bool Add(string title, string description, DateTime endDate, int price, string userName);
+    void CreateAuction(string title, string description, DateTime endDate, int price, string userName);
     
-    bool editDescription(int id, string description, string userName);
+    void EditDescription(int id, string description, string userName);
+    
+    Auction GetDetails(Auction auction);
 
-    public List<Auction> ListAllActiveAuctions();
+    List<Auction> ListAllActiveAuctions();
     
-    public List<Auction> ListAllWonAuctions(string userName);
+    List<Auction> ListAllWonAuctions(string userName);
     
-    public bool Bid(int price, int auctionId, string userName);
+    void Bid(int price, int auctionId, string userName);
     
-    public List<Auction> ListAllyourAuctions(string userName);
+    List<Auction> ListBiddedAuctions(string userName);
 }

@@ -2,11 +2,8 @@
 
 namespace AuctionApp.Persistence;
 
-public class AuctionDb
+public class AuctionDb: BaseEntity
 {
-    [Key]
-    public int Id { get; set; }
-    
     [Required]
     [MaxLength(100)]
     public string Title { get; set; }
@@ -20,9 +17,6 @@ public class AuctionDb
 
     [Required] 
     public int Price { get; set; }
-
-    [Required]
-    public string UserName { get; set; }
     
     // Navigation property
     public List<BidDb> BidDbs { get; set; } = new List<BidDb>();

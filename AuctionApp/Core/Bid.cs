@@ -23,20 +23,24 @@ public class Bid
     
     public DateTime BidDate { get; set; }
     
+    public int AuctionId { get; set; }
+    
     public string UserName { get; set; }
 
-    public Bid(int price, string userName)
+    public Bid(int price, string userName, int auctionId)
     {
         _price = price;
         BidDate = DateTime.Now;
+        AuctionId = auctionId;
         UserName = userName;
     }
 
-    public Bid(int id, int price,string userName) 
+    public Bid(int id, int price,string userName, int auctionId) 
     {
         Id = id;
         _price = price;
         BidDate = DateTime.Now;
+        AuctionId = auctionId;
         UserName = userName;
     }
 

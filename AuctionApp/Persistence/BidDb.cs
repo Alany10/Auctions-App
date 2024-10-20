@@ -3,20 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuctionApp.Persistence;
 
-public class BidDb
+public class BidDb : BaseEntity
 {
-    [Key]
-    public int Id { get; set; }
-
     [Required]
     public int Price { get; set; }
     
     [Required]
     [DataType(DataType.DateTime)]
     public DateTime BidDate { get; set; }
-    
-    [Required]
-    public string UserName { get; set; }
 
     // FK and navigation propert
     [ForeignKey("AuctionId")]

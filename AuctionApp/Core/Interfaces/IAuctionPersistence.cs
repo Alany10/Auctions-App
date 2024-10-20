@@ -2,15 +2,21 @@
 
 public interface IAuctionPersistence
 {
-    List<Auction> GetAll();
-    
     List<Auction> GetAllByUserName(string userName);
     
     Auction GetById(int id);
     
-    bool Save(Auction auction);
+    void Create(Auction auction);
     
-    bool Update(Auction auction);
-
-    public bool Bid(Bid bid, int auctionId);
+    void Create(Bid bid);
+    
+    void EditDescription(Auction auction);
+    
+    List<Auction> GetAllActiveAuctions();
+    
+    Auction GetDetails(Auction auction);
+    
+    List<Auction> GetAllBiddedAuctions(string userName);
+    
+    List<Auction> GetAllWonAuctions(string userName);
 }

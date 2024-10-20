@@ -12,20 +12,15 @@ public class AuctionService : IAuctionService
         _auctionPersistence = auctionPersistence;
     }
 
-    public List<Auction> GetAllByUserName(string userName)
+    public List<Auction> ListYourAuctions(string userName)
     {
-        // Hämtar alla auktioner från din datalagring
+        // Hämtar alla auktioner som tillhör en användare
         List<Auction> auctions = _auctionPersistence.GetAllByUserName(userName);
 
-        // Filtrerar bort alla auktioner som är avslutade och sorterar de återstående efter EndDate
-        List<Auction> sortedAuctions = auctions
-            .OrderBy(auction => auction.EndDate) // Sortera efter EndDate
-            .ToList();
-
-        return sortedAuctions;
+        return auctions.OrderBy(a => a.EndDate).ToList();
     }
 
-    public Auction GetById(int id)
+    public Auction GetAuctionById(int id)
     {
         Auction auction = _auctionPersistence.GetById(id);
         if (auction == null)
@@ -47,7 +42,7 @@ public class AuctionService : IAuctionService
         return auction.UserName.Equals(userName);
     }
 
-    public bool Add(string title, string description, DateTime endDate, int price, string userName)
+    public void CreateAuction(string title, string description, DateTime endDate, int price, string userName)
     {
         if (title == null || title.Length > 100)
             throw new DataException("Title cannot be null or more than 100 characters");
@@ -63,21 +58,10 @@ public class AuctionService : IAuctionService
 
         Auction newAuction = new Auction(title, description, endDate, price, userName);
 
-        List<Auction> allAuctions = _auctionPersistence.GetAll();
-
-        foreach (Auction auction in allAuctions)
-        {
-            if (Auction.IsEqual(newAuction, auction))
-            {
-                return false;
-            }
-        }
-
-        _auctionPersistence.Save(newAuction);
-        return true;
+        _auctionPersistence.Create(newAuction);
     }
 
-    public bool editDescription(int id, string description, string userName)
+    public void EditDescription(int id, string description, string userName)
     {
         Auction auction = _auctionPersistence.GetById(id);
         if (auction == null) throw new DataException("Auction not found");
@@ -88,25 +72,24 @@ public class AuctionService : IAuctionService
         if (!IsOwner(id, userName)) throw new UnauthorizedAccessException("User does not belong to this auction");
 
         auction.Description = description;
-        _auctionPersistence.Update(auction);
-        return true;
+        _auctionPersistence.EditDescription(auction);
+    }
+
+    public Auction GetDetails(Auction auction)
+    {
+        if (auction == null) throw new DataException("Auction not found");
+        return _auctionPersistence.GetDetails(auction);
     }
 
     public List<Auction> ListAllActiveAuctions()
     {
         // Hämtar alla auktioner från din datalagring
-        List<Auction> auctions = _auctionPersistence.GetAll();
+        List<Auction> auctions = _auctionPersistence.GetAllActiveAuctions();
 
-        // Filtrerar bort alla auktioner som är avslutade och sorterar de återstående efter EndDate
-        List<Auction> activeAuctions = auctions
-            .Where(auction => auction.IsCompleted()) // Filtrera bort avslutade auktioner
-            .OrderBy(auction => auction.EndDate) // Sortera efter EndDate
-            .ToList();
-
-        return activeAuctions;
+        return auctions.OrderBy(a => a.EndDate).ToList();
     }
 
-    public bool Bid(int price, int auctionId, string userName)
+    public void Bid(int price, int auctionId, string userName)
     {
         Auction auction = _auctionPersistence.GetById(auctionId);
 
@@ -116,66 +99,25 @@ public class AuctionService : IAuctionService
         
         if (userName == null) throw new DataException("User name cannot be null");
 
-        Bid newBid = new Bid(price, userName);
-        if (newBid.BidDate < auction.EndDate) auction.AddBid(newBid);
-        else throw new DataException("Auction expired");
-
-        _auctionPersistence.Bid(newBid, auctionId);
-        return true;
+        Bid newBid = new Bid(price, userName, auctionId);
+        if (newBid.BidDate >= auction.EndDate) throw new DataException("Auction expired");
+        
+        auction.AddBid(newBid);
+        
+        _auctionPersistence.Create(newBid);
     }
 
-    public List<Auction> ListAllyourAuctions(string userName)
+    public List<Auction> ListBiddedAuctions(string userName)
     {
-        List<Auction> auctions = _auctionPersistence.GetAll().Where(auction => auction.IsCompleted()).ToList();
-        List<Auction> yourAuctions = new List<Auction>();
+        List<Auction> auctions = _auctionPersistence.GetAllBiddedAuctions(userName).ToList();
 
-        foreach (Auction auction in auctions)
-        {
-            foreach (Bid bid in auction.Bids)
-            {
-                if (bid.UserName.Equals(userName))
-                {
-                    yourAuctions.Add(auction);
-                    break;
-                }
-            }
-        }
-        
-        yourAuctions
-            .OrderBy(auction => auction.EndDate) // Sortera efter EndDate
-            .ToList();
-        
-        return yourAuctions;
+        return auctions.OrderBy(a => a.EndDate).ToList();
     }
 
     public List<Auction> ListAllWonAuctions(string userName)
     {
-        // Hämta alla avslutade auktioner
-        List<Auction> auctions = _auctionPersistence.GetAll()
-            .Where(a => !a.IsCompleted())
-            .ToList();
+        List<Auction> auctions = _auctionPersistence.GetAllWonAuctions(userName).ToList();
 
-        List<Auction> wonAuctions = new List<Auction>();
-
-        // Loop genom varje auktion
-        foreach (Auction auction in auctions)
-        {
-            // Kontrollera om auktionen har bud
-            if (auction.Bids.Any())
-            {
-                // Hitta det högsta budet för auktionen
-                Bid highestBid = auction.Bids.OrderByDescending(b => b.Price).First();
-
-                // Kontrollera om användarnamnet för det högsta budet matchar det angivna användarnamnet
-                if (highestBid.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase))
-                {
-                    wonAuctions.Add(auction);
-                }
-            }
-        }
-
-        return wonAuctions;
+        return auctions.Where(a => a.EndDate < DateTime.Now).ToList();
     }
-
-    
 }

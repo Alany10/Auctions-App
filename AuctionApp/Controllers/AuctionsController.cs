@@ -18,9 +18,9 @@ namespace AuctionApp.Controllers
         }
 
         // GET: AuctionsController
-        public ActionResult Index()
+        public ActionResult YourAuctions()
         {
-            List<Auction> auctions = _auctionService.GetAllByUserName(User.Identity.Name);
+            List<Auction> auctions = _auctionService.ListYourAuctions(User.Identity.Name);
             List<AuctionVm> auctionsVMs = new List<AuctionVm>();
 
             foreach (Auction auction in auctions)
@@ -28,11 +28,11 @@ namespace AuctionApp.Controllers
                 auctionsVMs.Add(AuctionVm.fromAuction(auction));
             }
 
-            return View(auctionsVMs);
+            return View("index", auctionsVMs);
         }
 
         // Ny metod för att hämta alla auktioner oavsett ägare
-        public ActionResult IndexAll()
+        public ActionResult AllAuctions()
         {
             // Hämta alla auktioner
             List<Auction>
@@ -53,7 +53,7 @@ namespace AuctionApp.Controllers
             
             // Hämta alla auktioner
             List<Auction>
-                auctions = _auctionService.ListAllyourAuctions(userName); // Du behöver implementera denna metod i din tjänst
+                auctions = _auctionService.ListBiddedAuctions(userName); // Du behöver implementera denna metod i din tjänst
             List<AuctionVm> auctionsVMs = new List<AuctionVm>();
 
             foreach (Auction auction in auctions)
@@ -86,7 +86,8 @@ namespace AuctionApp.Controllers
         {
             try
             {
-                Auction auction = _auctionService.GetById(id);
+                Auction auction = _auctionService.GetAuctionById(id);
+                auction = _auctionService.GetDetails(auction);
                 bool isOwner = _auctionService.IsOwner(auction.Id, User.Identity.Name);
 
                 AuctionDetailsVm detailsVm = AuctionDetailsVm.FromAuction(auction, isOwner);
@@ -119,8 +120,8 @@ namespace AuctionApp.Controllers
                     int price = createAuctionVm.Price;
                     string userName = User.Identity.Name;
 
-                    _auctionService.Add(title, description, endDate, price, userName);
-                    return RedirectToAction("Index");
+                    _auctionService.CreateAuction(title, description, endDate, price, userName);
+                    return RedirectToAction("YourAuctions");
                 }
 
                 return View(createAuctionVm);
@@ -135,7 +136,7 @@ namespace AuctionApp.Controllers
         public ActionResult Edit(int id)
         {
             // Hämta auktionen från databasen med hjälp av id
-            Auction auction = _auctionService.GetById(id);
+            Auction auction = _auctionService.GetAuctionById(id);
 
             if (auction == null) return NotFound();
 
@@ -164,8 +165,8 @@ namespace AuctionApp.Controllers
                     string description = editAuctionVm.Description;
                     string userName = User.Identity.Name;
 
-                    _auctionService.editDescription(id, description, userName);
-                    return RedirectToAction("Index");
+                    _auctionService.EditDescription(id, description, userName);
+                    return RedirectToAction("YourAuctions");
                 }
 
                 return View(editAuctionVm);
@@ -194,7 +195,7 @@ namespace AuctionApp.Controllers
                     string userName = User.Identity.Name;
                     
                     _auctionService.Bid(price, id, userName);
-                    return RedirectToAction("Index");
+                    return RedirectToAction("YourAuctions");
                 }
 
                 return View(createBidVm);
