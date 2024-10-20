@@ -18,7 +18,7 @@ public class AuctionRepository : GenericRepository<AuctionDb>, IAuctionRepositor
         AuctionDb existingAuction = _dbContext.AuctionDbs.Find(auctionDb.Id);
 
         // Uppdatera värdena på den existerande auktionen
-        existingAuction.Description = auctionDb.Description; //TODO
+        existingAuction.Description = auctionDb.Description; 
 
         // Spara ändringarna
         _dbContext.SaveChanges();
