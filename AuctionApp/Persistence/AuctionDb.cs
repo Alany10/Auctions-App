@@ -2,7 +2,7 @@
 
 namespace AuctionApp.Persistence;
 
-public class AuctionDb: BaseEntity
+public class AuctionDb : BaseEntity
 {
     [Required]
     [MaxLength(100)]

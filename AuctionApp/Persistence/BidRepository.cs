@@ -1,13 +1,11 @@
-﻿using AuctionApp.Core.Interfaces;
+﻿using AuctionApp.Persistence.Interfaces;
 
-namespace AuctionApp.Persistence;
-
-public class BidRepository : GenericRepository<BidDb>, IBidRepository
+namespace AuctionApp.Persistence
 {
-    private readonly AuctionDbContext _dbContext;
-
-    public BidRepository(AuctionDbContext dbContext) : base(dbContext)
+    public class BidRepository : GenericRepository<BidDb>, IBidRepository
     {
-        _dbContext = dbContext;
+        public BidRepository(AuctionDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

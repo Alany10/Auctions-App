@@ -31,12 +31,11 @@ namespace AuctionApp.Controllers
             return View("index", auctionsVMs);
         }
 
-        // Ny metod för att hämta alla auktioner oavsett ägare
+        
         public ActionResult AllAuctions()
         {
-            // Hämta alla auktioner
             List<Auction>
-                auctions = _auctionService.ListAllActiveAuctions(); // Du behöver implementera denna metod i din tjänst
+                auctions = _auctionService.ListAllActiveAuctions(); 
             List<AuctionVm> auctionsVMs = new List<AuctionVm>();
 
             foreach (Auction auction in auctions)
@@ -44,7 +43,7 @@ namespace AuctionApp.Controllers
                 auctionsVMs.Add(AuctionVm.fromAuction(auction));
             }
 
-            return View("Index", auctionsVMs); // Använd samma vy som för Index
+            return View("Index", auctionsVMs);
         }
         
         public ActionResult BiddedAuctions()
@@ -93,7 +92,7 @@ namespace AuctionApp.Controllers
                 AuctionDetailsVm detailsVm = AuctionDetailsVm.FromAuction(auction, isOwner);
                 return View(detailsVm);
             }
-            catch (Exception e)
+            catch (DataException e)
             {
                 return BadRequest();
             }
@@ -195,7 +194,7 @@ namespace AuctionApp.Controllers
                     string userName = User.Identity.Name;
                     
                     _auctionService.Bid(price, id, userName);
-                    return RedirectToAction("YourAuctions");
+                    return RedirectToAction("BiddedAuctions");
                 }
 
                 return View(createBidVm);

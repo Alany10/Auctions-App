@@ -1,6 +1,4 @@
-﻿namespace AuctionApp.Core.Interfaces;
-
-using AuctionApp.Persistence;
+﻿namespace AuctionApp.Persistence.Interfaces;
 
 public interface IAuctionRepository : IGenericRepository<AuctionDb>
 {

@@ -1,6 +1,4 @@
-﻿using AuctionApp.Persistence;
-
-namespace AuctionApp.Core.Interfaces;
+﻿namespace AuctionApp.Persistence.Interfaces;
 
 public interface IGenericRepository<T> where T : BaseEntity
 {

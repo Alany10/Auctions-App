@@ -4,7 +4,6 @@ using AuctionApp.Core.Interfaces;
 using AuctionApp.Persistence;
 using Microsoft.EntityFrameworkCore;
 using AuctionApp.Data;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +20,7 @@ builder.Services.AddScoped<IAuctionPersistence, AuctionPersistence>();
 builder.Services.AddDbContext<AuctionDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("AuctionDbConnection")));
 
-// identity
+// identitydb
 builder.Services.AddDbContext<AppIdentityDbContext>(options =>    
     options.UseMySQL(builder.Configuration.GetConnectionString("IdentityDbConnection")));
 builder.Services.AddDefaultIdentity<AppIdentityUser>(options => 

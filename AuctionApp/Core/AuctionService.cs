@@ -14,7 +14,7 @@ public class AuctionService : IAuctionService
 
     public List<Auction> ListYourAuctions(string userName)
     {
-        // Hämtar alla auktioner som tillhör en användare
+        if (userName == null) throw new ArgumentNullException(); 
         List<Auction> auctions = _auctionPersistence.GetAllByUserName(userName);
 
         return auctions.OrderBy(a => a.EndDate).ToList();
@@ -83,7 +83,6 @@ public class AuctionService : IAuctionService
 
     public List<Auction> ListAllActiveAuctions()
     {
-        // Hämtar alla auktioner från din datalagring
         List<Auction> auctions = _auctionPersistence.GetAllActiveAuctions();
 
         return auctions.OrderBy(a => a.EndDate).ToList();
@@ -99,6 +98,8 @@ public class AuctionService : IAuctionService
         
         if (userName == null) throw new DataException("User name cannot be null");
 
+        if (auction.UserName.Equals(userName)) throw new DataException("User owns this auction");
+        
         Bid newBid = new Bid(price, userName, auctionId);
         if (newBid.BidDate >= auction.EndDate) throw new DataException("Auction expired");
         
@@ -109,6 +110,7 @@ public class AuctionService : IAuctionService
 
     public List<Auction> ListBiddedAuctions(string userName)
     {
+        if (userName == null) throw new ArgumentNullException(); 
         List<Auction> auctions = _auctionPersistence.GetAllBiddedAuctions(userName).ToList();
 
         return auctions.OrderBy(a => a.EndDate).ToList();
@@ -116,6 +118,7 @@ public class AuctionService : IAuctionService
 
     public List<Auction> ListAllWonAuctions(string userName)
     {
+        if (userName == null) throw new ArgumentNullException(); 
         List<Auction> auctions = _auctionPersistence.GetAllWonAuctions(userName).ToList();
 
         return auctions.Where(a => a.EndDate < DateTime.Now).ToList();

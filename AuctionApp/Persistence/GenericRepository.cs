@@ -1,5 +1,4 @@
-﻿using AuctionApp.Core.Interfaces;
-using AutoMapper;
+﻿using AuctionApp.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuctionApp.Persistence

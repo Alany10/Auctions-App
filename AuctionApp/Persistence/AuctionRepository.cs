@@ -1,4 +1,4 @@
-﻿using AuctionApp.Core.Interfaces;
+﻿using AuctionApp.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuctionApp.Persistence;

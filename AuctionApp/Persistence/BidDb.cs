@@ -12,7 +12,7 @@ public class BidDb : BaseEntity
     [DataType(DataType.DateTime)]
     public DateTime BidDate { get; set; }
 
-    // FK and navigation propert
+    // FK and navigation property
     [ForeignKey("AuctionId")]
     public AuctionDb AuctionDb { get; set; }
     
